@@ -10,7 +10,7 @@ export function AuthGuard({ isPrivate }: IAuthGuardProps) {
 	const { signedIn } = useAuth();
 
 	if (signedIn && !isPrivate) {
-		return <Navigate to={ROUTES.TODO.DASHBOARD} replace />;
+		return <Navigate to={ROUTES.HUB} replace />;
 	}
 
 	if (!signedIn && isPrivate) {

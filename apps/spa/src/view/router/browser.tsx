@@ -4,13 +4,7 @@ import { NotFound } from "@/pages/not-found";
 import { Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AuthGuard } from "./auth-guard";
-import {
-	authRoutes,
-	goalsRoutes,
-	projectsRoutes,
-	todoRoutes,
-	userRoutes,
-} from "./modules";
+import { appRoutes, authRoutes, userRoutes } from "./modules";
 
 const router = createBrowserRouter([
 	{
@@ -23,7 +17,7 @@ const router = createBrowserRouter([
 		children: [
 			{
 				element: <DashboardLayout />,
-				children: [todoRoutes, userRoutes, goalsRoutes, projectsRoutes],
+				children: [appRoutes, userRoutes],
 			},
 		],
 	},

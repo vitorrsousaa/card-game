@@ -1,71 +1,111 @@
-import { SigninForm } from "@/modules/auth/forms/signin";
+import { ROUTES } from "@/config/routes";
+import { useAuth } from "@/hooks/auth";
 import { Button } from "@repo/ui/button";
-import { Icon } from "@repo/ui/icon";
-import { Separator } from "@repo/ui/separator";
-import { ArrowRight } from "lucide-react";
-import { useSigninPageHook } from "./signin.hook";
-
-const SIGNIN_FORM_ID = "signin-form";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@repo/ui/card";
+import { Input } from "@repo/ui/input";
+import { Label } from "@repo/ui/label";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function Signin() {
-	const {
-		handleSubmit,
-		handleNavigateToSignup,
-		handleSignInWithGoogle,
-		isSubmitting,
-	} = useSigninPageHook();
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+
+	const navigate = useNavigate();
+
+	const { signin } = useAuth();
+
+	const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		console.log(email, password);
+		signin("accessToken");
+		navigate(ROUTES.HUB);
+	};
 
 	return (
-		<div className="flex items-center justify-center min-h-screen">
-			<div className="mx-auto w-full max-w-xs space-y-6">
-				<div className="space-y-2 text-center">
-					<Icon name="bell" className="mx-auto h-16 w-16" />
-					<h1 className="text-3xl font-semibold">Welcome back</h1>
-					<p className="text-muted-foreground">
-						Sign in to access to your dashboard, settings and projects.
-					</p>
-				</div>
-				<div className="space-y-5">
-					<Button
-						variant="outline"
-						className="w-full justify-center gap-2"
-						type="button"
-						onClick={handleSignInWithGoogle}
-					>
-						<Icon name="google" className="h-4 w-4" />
-						Sign in with Google
-					</Button>
-
-					<div className="flex items-center gap-2">
-						<Separator className="flex-1" />
-						<span className="text-sm text-muted-foreground">
-							or sign in with email
-						</span>
-						<Separator className="flex-1" />
-					</div>
-
-					<SigninForm onSubmit={handleSubmit} formId={SIGNIN_FORM_ID} />
-					<Button
-						type="submit"
-						form={SIGNIN_FORM_ID}
-						disabled={isSubmitting}
-						className="w-full"
-					>
-						Sign in
-						<ArrowRight className="h-4 w-4" />
-					</Button>
-					<div className="text-center text-sm">
-						No account?{" "}
-						<button
-							type="button"
-							onClick={handleNavigateToSignup}
-							className="text-primary font-medium hover:underline"
-						>
-							Create an account
-						</button>
-					</div>
+		<div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+			{/* Animated background */}
+			<div className="absolute inset-0 bg-gradient-to-br from-background via-secondary to-background">
+				<div className="absolute inset-0 opacity-20">
+					{[...Array(20)].map((_, i) => (
+						<div
+							key={i}
+							className="absolute rounded-full bg-primary animate-pulse"
+							style={{
+								width: Math.random() * 100 + 50 + "px",
+								height: Math.random() * 100 + 50 + "px",
+								top: Math.random() * 100 + "%",
+								left: Math.random() * 100 + "%",
+								animationDelay: Math.random() * 3 + "s",
+								animationDuration: Math.random() * 3 + 3 + "s",
+							}}
+						/>
+					))}
 				</div>
 			</div>
+
+			{/* Login Form */}
+			<Card className="w-full max-w-md mx-4 z-10 bg-secondary/90 backdrop-blur-md border-2 border-primary/30 shadow-2xl shadow-primary/20">
+				<CardHeader className="text-center space-y-2 pb-4">
+					<div className="mx-auto mb-2">
+						<div className="text-6xl animate-float">⏳</div>
+					</div>
+					<CardTitle className="text-3xl font-bold text-balance">
+						Chronomancers of the Eternal Flux
+					</CardTitle>
+					<CardDescription className="text-base">
+						Enter the realm of temporal mastery
+					</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<form onSubmit={handleLogin} className="space-y-4">
+						<div className="space-y-2">
+							<Label htmlFor="email">Email</Label>
+							<Input
+								id="email"
+								type="email"
+								placeholder="chronomancer@eonspire.com"
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+								className="bg-background/50"
+								required
+							/>
+						</div>
+						<div className="space-y-2">
+							<Label htmlFor="password">Password</Label>
+							<Input
+								id="password"
+								type="password"
+								placeholder="••••••••"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								className="bg-background/50"
+								required
+							/>
+						</div>
+						<Button type="submit" className="w-full" size="lg">
+							Enter the Timeline
+						</Button>
+						<Button
+							type="button"
+							variant="outline"
+							className="w-full bg-transparent"
+							size="lg"
+						>
+							Create Account
+						</Button>
+					</form>
+					<p className="text-center text-sm text-muted-foreground mt-6 italic">
+						The timeline awaits your command.
+					</p>
+				</CardContent>
+			</Card>
 		</div>
 	);
 }
