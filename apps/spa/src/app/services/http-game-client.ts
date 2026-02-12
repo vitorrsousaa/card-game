@@ -20,7 +20,7 @@ httpGameClient.interceptors.request.use((config) => {
 });
 
 httpGameClient.interceptors.request.use((config) => {
-	config.headers.set("Access-Control-Allow-Origin", "https://app.grypp.com.br");
+	// config.headers.set("Access-Control-Allow-Origin", "https://app.grypp.com.br");
 	config.headers["Content-Type"] = "application/json";
 
 	return config;
