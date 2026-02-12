@@ -1,0 +1,18 @@
+[
+  {
+    "id": "flux_strike",
+    "name": "Golpe do Fluxo",
+    "manaCost": 1,
+    "attack": 2,
+    "health": 1,
+    "description": "Uma rajada de energia do fluxo."
+  },
+  {
+    "id": "chrono_guard",
+    "name": "Guarda Cronomante",
+    "manaCost": 2,
+    "attack": 1,
+    "health": 3,
+    "description": "Defensor do tempo."
+  }
+]

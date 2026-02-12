@@ -1,0 +1,21 @@
+# Production docker-compose (override for production)
+# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+name: game-server
+
+services:
+  app:
+    profiles:
+      - production
+    build:
+      target: production
+    environment:
+      NODE_ENV: production
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    restart: always

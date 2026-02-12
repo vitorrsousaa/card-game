@@ -1,0 +1,108 @@
+# Game server stack: Redis (and optionally the Node app) under one project.
+# Run from this directory: docker compose up -d
+# Then connect to Redis at redis://localhost:6379 (host) or redis://redis:6379 (from another container in this stack).
+name: game-server
+
+# Common configuration for app services (using YAML anchors)
+x-common-config: &common-config
+  build:
+    context: ../..
+    dockerfile: apps/game/Dockerfile
+    target: development
+  depends_on:
+    redis:
+      condition: service_healthy
+  environment:
+    PORT: ${PORT:-3001}
+    NODE_ENV: ${NODE_ENV:-development}
+    REDIS_URL: redis://redis:6379
+  networks:
+    - game-server-network
+
+services:
+  # Development app with hot-reload (mounts local code)
+  app:
+    <<: *common-config
+    container_name: game-server-app
+    env_file: .env
+    ports:
+      - "${PORT:-3001}:3001"
+      - "9229:9229" # Node.js debug port
+    volumes:
+      - ../../:/app
+      - /app/node_modules
+      - /app/apps/game/node_modules
+      - /app/packages/engine/node_modules
+      - /app/packages/logger/node_modules
+    command: pnpm --filter game run dev
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+
+  # Production app (built image, no volumes)
+  app-prod:
+    <<: *common-config
+    build:
+      context: ../..
+      dockerfile: apps/game/Dockerfile
+      target: production
+    container_name: game-server-app-prod
+    env_file: .env
+    ports:
+      - "${PORT:-3001}:3001"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    profiles:
+      - production
+
+  redis:
+    image: redis:7-alpine
+    container_name: game-server-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - game-server-redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - game-server-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+volumes:
+  game-server-redis-data:
+
+networks:
+  game-server-network:
+    driver: bridge
+

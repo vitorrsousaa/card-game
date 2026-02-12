@@ -1,0 +1,38 @@
+{
+  "name": "game",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsup src/server/index.ts --format esm --target node20",
+    "lint": "biome lint --write ./src",
+    "ci:lint": "biome lint ./src",
+    "typecheck": "tsc --noEmit",
+    "ci:typecheck": "tsc --noEmit",
+    "format": "biome format --write ./src",
+    "ci:format": "biome format ./src",
+    "docker:up": "docker compose up -d",
+    "docker:build": "docker compose up -d --build",
+    "docker:up:prod": "docker compose --profile production up -d",
+    "docker:build:prod": "docker compose --profile production up -d --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:restart": "docker compose restart",
+    "docker:ps": "docker compose ps"
+  },
+  "dependencies": {
+    "@repo/engine": "workspace:*",
+    "@repo/logger": "workspace:*",
+    "dotenv": "^16.4.7",
+    "hono": "^4.6.0"
+  },
+  "devDependencies": {
+    "@hono/node-server": "^1.13.0",
+    "@repo/typescript-config": "workspace:*",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
