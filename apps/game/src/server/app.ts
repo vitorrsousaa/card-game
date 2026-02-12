@@ -1,4 +1,5 @@
 import { createLogger } from "@application/utils/logger";
+import { authMockMiddleware } from "@server/middlewares/auth-mock";
 import { health } from "@server/routes/health-routes";
 import { sessions } from "@server/routes/sessions-routes";
 import { Hono } from "hono";
@@ -43,6 +44,8 @@ app.use("*", async (c, next) => {
 		duration: `${duration}ms`,
 	});
 });
+
+app.use("*", authMockMiddleware);
 
 app.route("/health", health);
 app.route("/sessions", sessions);
