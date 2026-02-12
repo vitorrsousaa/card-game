@@ -1,6 +1,9 @@
-import type { IResponse } from "@application/interfaces/http";
 import { AppError } from "@application/errors/app-error";
 import { ServerError } from "@application/errors/server-error";
+import type { IResponse } from "@application/interfaces/http";
+import { createLogger } from "./logger";
+
+const logger = createLogger("error-handler");
 
 export function errorHandler(error: unknown): IResponse {
 	if (error instanceof AppError) {
@@ -11,6 +14,10 @@ export function errorHandler(error: unknown): IResponse {
 			},
 		};
 	}
+
+	logger.error("Unhandled error", {
+		error,
+	});
 
 	return new ServerError().toResponse();
 }
