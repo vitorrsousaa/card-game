@@ -1,8 +1,10 @@
+import { createLogger } from "@application/utils/logger";
 import { health } from "@server/routes/health-routes";
 import { sessions } from "@server/routes/sessions-routes";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 
+const logger = createLogger("game-server");
 const app = new Hono();
 
 app.use(
@@ -21,6 +23,26 @@ app.use(
 		credentials: true,
 	}),
 );
+
+app.use("*", async (c, next) => {
+	const start = Date.now();
+	const method = c.req.method;
+	const path = c.req.path;
+
+	logger.info("Request received", { method, path });
+
+	await next();
+
+	const duration = Date.now() - start;
+	const status = c.res.status || 200;
+
+	logger.info("Request completed", {
+		method,
+		path,
+		status,
+		duration: `${duration}ms`,
+	});
+});
 
 app.route("/health", health);
 app.route("/sessions", sessions);
