@@ -4,7 +4,7 @@ import type * as z from "zod";
 
 type IReturnErrorMissingFieldOutput<S extends z.ZodType> = [
 	true,
-	z.SafeParseSuccess<z.output<S>>["data"],
+	z.ZodSafeParseSuccess<z.output<S>>["data"],
 ];
 
 type IReturnErrorMissingFieldOutputFalse = [false, IResponse];

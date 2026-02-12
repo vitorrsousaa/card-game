@@ -12,7 +12,7 @@ export class CreateSessionController implements IController {
 		try {
 			const [status, parsedBody] = missingFields(createSessionSchema, {
 				...request.body,
-				userId: request.userId || "",
+				userId: request?.userId || "",
 			});
 
 			if (!status) return parsedBody;
