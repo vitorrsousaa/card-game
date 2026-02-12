@@ -1,0 +1,13 @@
+{
+  "name": "@repo/engine",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Card game engine (pure Lua). Reads JSON from stdin, writes JSON to stdout. One line per message.",
+  "scripts": {
+    "start": "lua src/main.lua",
+    "run": "lua src/main.lua"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
