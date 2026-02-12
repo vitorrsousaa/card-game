@@ -3,10 +3,11 @@ import { defineConfig } from "tsup";
 export default defineConfig({
 	entry: [
 		"src/index.ts",
-		"src/todo/index.ts",
-		"src/todo/inbox/index.ts",
-		"src/todo/create/index.ts",
 		"src/common/index.ts",
+		"src/game/index.ts",
+		"src/game/sessions/index.ts",
+		"src/game/cards/index.ts",
+		"src/game/decks/index.ts",
 	],
 	format: ["esm"],
 	dts: true,
