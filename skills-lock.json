@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "brainstorming": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "computedHash": "5cafa1558b0b6bd4d4c71f23d5567b7fcbbcdb4b0a50b0c5f69a80a3cebaf9b8"
+    },
+    "marketing-ideas": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "06ad6731a3bb329218ad88ee364551db6cce8835d0646b60def8432c5f45e804"
+    },
+    "requesting-code-review": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "computedHash": "93a837ba79c3c3f0b3e503fd9d8b54c638337d73d200c1af3bca9607264bf0e0"
+    }
+  }
+}

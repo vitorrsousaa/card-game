@@ -7,6 +7,8 @@ description: Create GitHub repositories and manage issues/tasks using the GitHub
 
 Guide for creating repositories and managing issues/tasks on GitHub using the REST API.
 
+**Repositório padrão deste projeto:** issues e tarefas devem ser criadas no repositório vinculado a este workspace: **card-game** (owner: **vitorrsousaa**). Use `GITHUB_OWNER=vitorrsousaa` e `GITHUB_REPO=card-game` quando não for especificado outro.
+
 ## Authentication
 
 ### Personal Access Token (PAT)
@@ -29,9 +31,10 @@ Guide for creating repositories and managing issues/tasks on GitHub using the RE
 export GITHUB_TOKEN=ghp_your_token_here
 export GITHUB_OWNER=your-username
 
-# Option 2: .env file (recommended)
+# Option 2: .env file (recommended, na raiz do projeto)
 echo "GITHUB_TOKEN=ghp_your_token_here" >> .env
-echo "GITHUB_OWNER=your-username" >> .env
+echo "GITHUB_OWNER=vitorrsousaa" >> .env
+echo "GITHUB_REPO=card-game" >> .env
 ```
 
 **Verify it's working:**
@@ -185,8 +188,8 @@ async function getNextTaskNumber(
   return `TSK-${String(nextNumber).padStart(3, "0")}`;
 }
 
-// Usage
-const nextTsk = await getNextTaskNumber("vitorsousa", "artemis-tasks");
+// Usage (repositório padrão do projeto: vitorrsousaa/card-game)
+const nextTsk = await getNextTaskNumber("vitorrsousaa", "card-game");
 // Returns: "TSK-001" (if no tasks exist) or "TSK-002", "TSK-003", etc.
 ```
 
@@ -213,10 +216,10 @@ async function createTaskWithNumber(
   return await createIssue(owner, repo, formattedTitle, options);
 }
 
-// Usage
+// Usage (repositório padrão: vitorrsousaa/card-game)
 const issue = await createTaskWithNumber(
-  "vitorsousa",
-  "artemis-tasks",
+  "vitorrsousaa",
+  "card-game",
   "Implement JWT authentication",
   {
     body: issueBody,
@@ -294,16 +297,16 @@ enhancement
 
 high`;
 
-// Get next TSK number and create task
-const tskNumber = await getNextTaskNumber("vitorsousa", "artemis-tasks");
+// Get next TSK number and create task (repositório padrão: vitorrsousaa/card-game)
+const tskNumber = await getNextTaskNumber("vitorrsousaa", "card-game");
 const issue = await createIssue(
-  "vitorsousa",
-  "artemis-tasks",
+  "vitorrsousaa",
+  "card-game",
   `${tskNumber} - Implement JWT authentication`,
   {
     body: issueBody,
     labels: ["enhancement", "backend"],
-    assignees: ["vitorsousa"],
+    assignees: ["vitorrsousaa"],
   }
 );
 
@@ -470,8 +473,8 @@ async function createLabel(
   return await response.json();
 }
 
-// Example
-await createLabel("vitorsousa", "artemis-tasks", "priority-high", "d73a4a", "High priority");
+// Example (repositório padrão: vitorrsousaa/card-game)
+await createLabel("vitorrsousaa", "card-game", "priority-high", "d73a4a", "High priority");
 ```
 
 ## Error Handling
@@ -566,19 +569,21 @@ Response headers include rate limit information:
 
 ## Environment Variables
 
-Always use environment variables for tokens:
+Always use environment variables for tokens. Para este projeto, o repositório vinculado é **card-game** (owner **vitorrsousaa**).
 
 ```bash
-# .env
+# .env (na raiz do projeto)
 GITHUB_TOKEN=ghp_your_token_here
-GITHUB_OWNER=vitorsousa
+GITHUB_OWNER=vitorrsousaa
+GITHUB_REPO=card-game
 ```
 
 ```typescript
-// config.ts
+// config.ts — padrões alinhados ao repo vinculado (card-game)
 export const GITHUB_CONFIG = {
   token: process.env.GITHUB_TOKEN!,
-  owner: process.env.GITHUB_OWNER || "vitorsousa",
+  owner: process.env.GITHUB_OWNER || "vitorrsousaa",
+  repo: process.env.GITHUB_REPO || "card-game",
   apiUrl: "https://api.github.com",
 };
 ```
