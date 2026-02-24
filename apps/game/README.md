@@ -2,6 +2,20 @@
 
 API do jogo de cartas (partidas PvE/PvP). Servidor HTTP com Hono, preparado para WebSocket futuro e comunicação com a engine Lua via processo.
 
+## Requisitos
+
+### Desenvolvimento Local
+
+Para desenvolvimento local (fora do Docker), você precisa ter **Lua 5.1+** instalado:
+
+- **macOS:** `brew install lua`
+- **Linux (Debian/Ubuntu):** `apt-get install lua5.4` ou `apt-get install lua`
+- **Linux (Alpine):** `apk add lua5.4` ou `apk add lua`
+
+### Docker
+
+No Docker, Lua é instalado automaticamente no Dockerfile. Não é necessário instalar manualmente.
+
 ## Docker (Redis + App)
 
 O game server roda em um **stack Docker** (`game-server`) com Redis e a aplicação Node.

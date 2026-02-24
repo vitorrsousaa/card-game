@@ -4,6 +4,10 @@ FROM node:20-alpine AS base
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
 
+# Install Lua (required for engine execution)
+RUN apk add --no-cache lua5.4 && \
+    ln -s /usr/bin/lua5.4 /usr/bin/lua || true
+
 WORKDIR /app
 
 # Copy workspace root files
@@ -22,10 +26,17 @@ RUN pnpm install --frozen-lockfile
 # Development stage (for hot-reload with volumes)
 FROM base AS development
 
+# Copy and set up entrypoint script
+COPY apps/game/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 WORKDIR /app/apps/game
 
 # Expose app port and debug port
 EXPOSE 3001 9229
+
+# Set entrypoint
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 # Run dev command (will be overridden by docker-compose)
 CMD ["pnpm", "run", "dev"]
@@ -44,6 +55,10 @@ FROM node:20-alpine AS production
 
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
+
+# Install Lua (required for engine execution)
+RUN apk add --no-cache lua5.4 && \
+    ln -s /usr/bin/lua5.4 /usr/bin/lua || true
 
 WORKDIR /app
 

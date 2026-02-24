@@ -34,6 +34,7 @@ services:
       - /app/apps/game/node_modules
       - /app/packages/engine/node_modules
       - /app/packages/logger/node_modules
+    entrypoint: /usr/local/bin/docker-entrypoint.sh
     command: pnpm --filter game run dev
     restart: unless-stopped
     deploy:
