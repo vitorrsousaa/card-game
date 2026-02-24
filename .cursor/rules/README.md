@@ -45,6 +45,14 @@ React Query data fetching and caching:
 - Manual cache invalidation
 - Common issues and solutions
 
+### 6. **logging-standards.mdc** (Always Active)
+Logging standards and best practices:
+- When to use `logger.error()` in try/catch blocks
+- When to use `logger.warn()` for errors that don't stop execution
+- When to use `logger.debug()` for service-to-service communication
+- When to use `logger.info()` for important events
+- When NOT to log (normal operations)
+
 ## 🚀 How Rules Work
 
 ### Automatic Application

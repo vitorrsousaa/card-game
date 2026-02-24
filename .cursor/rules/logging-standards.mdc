@@ -1,0 +1,208 @@
+---
+description: Logging standards and best practices for error handling and service communication
+alwaysApply: true
+---
+
+# Logging Standards
+
+Guidelines for when and how to use logging throughout the Artemis project.
+
+## Logger Setup
+
+Always use the shared logger from `@repo/logger`:
+
+```typescript
+import { createLogger } from "@application/utils/logger";
+
+const logger = createLogger("module-name");
+```
+
+## Log Levels Usage
+
+### `logger.error()` - Errors in try/catch blocks
+
+**Use when:** An error occurs in a try/catch block and needs to be logged.
+
+```typescript
+try {
+  await someOperation();
+} catch (error) {
+  logger.error("Operation failed", { error, context: "additional info" });
+  throw error; // or handle appropriately
+}
+```
+
+**Key points:**
+- Always include the error object in the log
+- Add relevant context (keys, IDs, parameters)
+- Use descriptive messages that explain what failed
+
+### `logger.warn()` - Errors that don't stop execution
+
+**Use when:** Something goes wrong but the application continues with the flow (fallback, default value, degraded mode).
+
+```typescript
+if (!result.ok) {
+  logger.warn("Operation returned error but continuing", {
+    error: result.error,
+    code: result.code,
+    fallback: "using default value",
+  });
+  return defaultValue;
+}
+
+// Or when catching but continuing
+try {
+  await optionalOperation();
+} catch (error) {
+  logger.warn("Optional operation failed, continuing", { error });
+  // Continue execution
+}
+```
+
+**Key points:**
+- Use when the error is handled gracefully
+- Document what fallback/default is being used
+- Include enough context to understand why it's a warning, not an error
+
+### `logger.debug()` - Service-to-service communication
+
+**Use when:** Logging important or impactful service-to-service interactions (cache, API calls, external services).
+
+```typescript
+// Cache operations
+logger.debug("Cache lookup", { key, cacheType: "redis" });
+const cached = await cache.get(key);
+logger.debug("Cache result", { key, found: !!cached });
+
+// API calls to external services
+logger.debug("Calling external API", { endpoint, method });
+const response = await apiClient.post(endpoint, data);
+logger.debug("External API response", { status: response.status });
+
+// Engine/process communication
+logger.debug("Calling engine bridge", { inputType: input.type });
+const result = await engineBridge.run(input);
+logger.debug("Engine bridge response", { ok: result.ok });
+```
+
+**Key points:**
+- Only log **important or impactful** service interactions
+- Don't log every single operation - be selective
+- Include relevant identifiers (keys, IDs, endpoints)
+- Log both request and response when useful
+
+### `logger.info()` - Important application events
+
+**Use when:** Logging significant application events that are useful for monitoring and debugging.
+
+```typescript
+logger.info("Session created successfully", {
+  sessionId: session.id,
+  userId: session.userId,
+});
+
+logger.info("Request completed", {
+  method: req.method,
+  path: req.path,
+  statusCode: res.statusCode,
+  duration: Date.now() - startTime,
+});
+```
+
+**Key points:**
+- Use for important business events
+- Include relevant identifiers
+- Useful for monitoring and analytics
+
+## When NOT to Log
+
+**Don't add logs for:**
+- Normal, expected operations that don't need tracking
+- Simple getters/setters
+- Internal helper functions without external impact
+- Operations that are too frequent (unless critical)
+
+**Rule of thumb:** If it's not an error, warning, or an important service interaction, you probably don't need a log.
+
+## Examples
+
+### ✅ GOOD
+
+```typescript
+// Error in try/catch
+try {
+  await cache.set(key, value);
+} catch (error) {
+  logger.error("Cache set failed", { key, error });
+  throw error;
+}
+
+// Error but continuing
+if (!engineResult.ok) {
+  logger.warn("Engine returned error, using fallback", {
+    error: engineResult.error,
+    fallback: "empty state",
+  });
+  return { sessions: [] };
+}
+
+// Important service interaction
+logger.debug("Fetching from cache", { key });
+const cached = await cache.get(key);
+logger.debug("Cache hit", { key, found: !!cached });
+
+// Important business event
+logger.info("Session created", { sessionId, userId });
+```
+
+### ❌ BAD
+
+```typescript
+// Missing error log in catch
+try {
+  await operation();
+} catch (error) {
+  // Missing logger.error here!
+  throw error;
+}
+
+// Using info instead of warn for errors that continue
+if (!result.ok) {
+  logger.info("Error occurred"); // Should be logger.warn
+  return defaultValue;
+}
+
+// Logging every single operation
+logger.debug("Getting user ID"); // Too verbose
+const userId = user.id;
+logger.debug("Got user ID", { userId }); // Not impactful
+
+// Missing context in logs
+logger.error("Error"); // Needs context!
+```
+
+## Context in Logs
+
+Always include relevant context:
+
+```typescript
+// ✅ Good - includes context
+logger.error("Cache operation failed", {
+  operation: "get",
+  key: cacheKey,
+  error: error.message,
+  stack: error.stack,
+});
+
+// ❌ Bad - missing context
+logger.error("Failed");
+```
+
+## Summary
+
+- **`logger.error`**: All errors in try/catch blocks
+- **`logger.warn`**: Errors that don't stop execution (fallbacks, defaults)
+- **`logger.debug`**: Important service-to-service interactions (cache, APIs, engines)
+- **`logger.info`**: Important business events
+- **No logs**: Normal operations that don't need tracking

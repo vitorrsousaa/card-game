@@ -3,6 +3,9 @@ import { createLogger } from "@application/utils/logger";
 import type { IEngineBridge } from "@application/interfaces/engine-bridge";
 import type { ISessionsRepository } from "@application/interfaces/sessions-repository";
 import type { CreateSessionInput, CreateSessionOutput } from "./dto";
+import { getCatalog } from "./get-catalog";
+import { getMockDeck } from "./get-mock-deck";
+import { getMockEnemyDeck } from "./get-mock-enemy-deck";
 
 const logger = createLogger("create-session-service");
 
@@ -21,9 +24,30 @@ export class CreateSessionService implements ICreateSessionService {
 		});
 
 		try {
+			// Read and validate catalog
+			const catalog = await getCatalog();
+			logger.debug("CreateSessionService - catalog loaded", {
+				cardsCount: Object.keys(catalog).length,
+			});
+
+			// Generate mock decks for player and enemy
+			const deckIds = getMockDeck();
+			const enemyDeckIds = getMockEnemyDeck();
+			logger.debug("CreateSessionService - mock decks generated", {
+				playerDeckSize: deckIds.length,
+				enemyDeckSize: enemyDeckIds.length,
+			});
+
 			const engineInput = {
 				type: "init" as const,
-				payload: { options: { userId: input.userId } },
+				payload: {
+					options: {
+						userId: input.userId,
+						catalog,
+						deckIds,
+						enemyDeckIds,
+					},
+				},
 			};
 
 			logger.debug("CreateSessionService - calling engine bridge", {
