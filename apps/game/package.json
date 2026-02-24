@@ -23,14 +23,17 @@
     "docker:ps": "docker compose ps"
   },
   "dependencies": {
+    "@repo/contracts": "workspace:*",
     "@repo/engine": "workspace:*",
     "@repo/logger": "workspace:*",
     "dotenv": "^16.4.7",
-    "hono": "^4.6.0"
+    "hono": "^4.6.0",
+    "ioredis": "^5.4.1"
   },
   "devDependencies": {
     "@hono/node-server": "^1.13.0",
     "@repo/typescript-config": "workspace:*",
+    "@types/ioredis": "^5.0.0",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"

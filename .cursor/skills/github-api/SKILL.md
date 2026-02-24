@@ -1,6 +1,6 @@
 ---
 name: github-api
-description: Create GitHub repositories and manage issues/tasks using the GitHub REST API. Use when the user wants to create repositories, create issues, manage tasks, or interact with GitHub programmatically.
+description: Create GitHub repositories and manage issues/tasks using the GitHub REST API. Use when the user wants to create repositories, create issues, close/encerrar tasks (by TSK number), manage tasks, or interact with GitHub programmatically.
 ---
 
 # GitHub API Integration
@@ -430,6 +430,48 @@ async function closeIssue(
 
   return await response.json();
 }
+```
+
+### Encerrar task por número TSK (Close task by TSK number)
+
+Para **encerrar** uma task pelo número TSK (ex.: "encerrar task 001" → fecha a issue cujo título começa com `TSK-001`):
+
+1. Listar issues abertas: `GET /repos/{owner}/{repo}/issues?state=open`.
+2. Encontrar a issue cujo `title` começa com `TSK-{número}` (ex.: `TSK-001 - ...`).
+3. Fechar com PATCH: `state: "closed"`, `state_reason: "completed"`.
+
+**Script no projeto:** `scripts/close-issue-by-tsk.mjs`
+
+```bash
+# Encerra a task 001 (issue com título "TSK-001 - ...")
+node scripts/close-issue-by-tsk.mjs 001
+
+# Encerra TSK-002, TSK-003, etc.
+node scripts/close-issue-by-tsk.mjs 002
+node scripts/close-issue-by-tsk.mjs 003
+```
+
+Variáveis de ambiente (ou `.env` na raiz): `GITHUB_TOKEN`, opcionalmente `GITHUB_OWNER` (default: `vitorrsousaa`) e `GITHUB_REPO` (default: `card-game`).
+
+**Exemplo em código (mesma lógica do script):**
+
+```typescript
+async function closeTaskByTskNumber(
+  owner: string,
+  repo: string,
+  tskNumber: string
+) {
+  const tskLabel = `TSK-${tskNumber.replace(/^TSK-?/i, "").padStart(3, "0")}`;
+  const issues = await listIssues(owner, repo, { state: "open" });
+  const issue = issues.find((i) => i.title?.startsWith(tskLabel));
+  if (!issue) {
+    throw new Error(`Issue "${tskLabel} - ..." not found in ${owner}/${repo}`);
+  }
+  return await closeIssue(owner, repo, issue.number);
+}
+
+// Uso (repositório padrão: vitorrsousaa/card-game)
+await closeTaskByTskNumber("vitorrsousaa", "card-game", "001");
 ```
 
 ## Manage Labels
