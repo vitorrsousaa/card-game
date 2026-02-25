@@ -1,8 +1,11 @@
-import "dotenv/config";
-import { createServer } from "node:http";
+import { env } from "@application/config/environment";
+import { createLogger } from "@application/utils/logger";
 import { getRequestListener } from "@hono/node-server";
 import { app } from "@server/app";
-import { env } from "@application/config/environment";
+import "dotenv/config";
+import { createServer } from "node:http";
+
+const logger = createLogger("game-server");
 
 const requestListener = getRequestListener(app.fetch);
 
@@ -12,7 +15,14 @@ const requestListener = getRequestListener(app.fetch);
  */
 export const server = createServer(requestListener);
 
+server.on("error", (error) => {
+	logger.error("Server error", { error });
+	process.exit(1);
+});
+
 server.listen(env.port, () => {
-	// eslint-disable-next-line no-console
-	console.log(`Game API listening on http://localhost:${env.port}`);
+	logger.info("Game API listening", {
+		port: env.port,
+		url: `http://localhost:${env.port}`,
+	});
 });

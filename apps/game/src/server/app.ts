@@ -47,7 +47,25 @@ app.use("*", async (c, next) => {
 
 app.use("*", authMockMiddleware);
 
-app.route("/health", health);
-app.route("/sessions", sessions);
+const routeEntries = [
+	{ path: "/health", router: health },
+	{ path: "/sessions", router: sessions },
+] as const;
+
+logger.info("[Routes] Loading route files", {
+	routes: routeEntries.map((route) => route.path),
+});
+
+for (const route of routeEntries) {
+	try {
+		app.route(route.path, route.router);
+		logger.info("[Routes] ✓ Loaded", { path: route.path });
+	} catch (error) {
+		logger.error("[Routes] ✗ Error loading", {
+			path: route.path,
+			error,
+		});
+	}
+}
 
 export { app };
