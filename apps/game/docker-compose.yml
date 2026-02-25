@@ -30,10 +30,13 @@ services:
       - "9229:9229" # Node.js debug port
     volumes:
       - ../../:/app
-      - /app/node_modules
-      - /app/apps/game/node_modules
-      - /app/packages/engine/node_modules
-      - /app/packages/logger/node_modules
+      # Named volumes to preserve node_modules from image (Linux binaries)
+      # These prevent host node_modules (macOS) from overwriting container node_modules
+      - game-server-node-modules:/app/node_modules
+      - game-server-app-node-modules:/app/apps/game/node_modules
+      - game-server-engine-node-modules:/app/packages/engine/node_modules
+      - game-server-logger-node-modules:/app/packages/logger/node_modules
+      - game-server-pnpm-store:/app/.pnpm-store
     entrypoint: /usr/local/bin/docker-entrypoint.sh
     command: pnpm --filter game run dev
     restart: unless-stopped
@@ -102,6 +105,11 @@ services:
 
 volumes:
   game-server-redis-data:
+  game-server-node-modules:
+  game-server-app-node-modules:
+  game-server-engine-node-modules:
+  game-server-logger-node-modules:
+  game-server-pnpm-store:
 
 networks:
   game-server-network:

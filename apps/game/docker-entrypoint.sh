@@ -1,11 +1,15 @@
 #!/bin/sh
 set -e
 
-# Ensure dependencies are installed when container starts
-# This is necessary because volumes may overwrite node_modules from the image
-echo "Ensuring dependencies are installed..."
-pnpm install --frozen-lockfile
+echo "=== Docker Entrypoint Script ==="
+echo "Working directory: $(pwd)"
 
-# Execute the command passed as argument
-echo "Starting application..."
+# Verify ioredis is available (quick check)
+if [ -d "/app/node_modules/.pnpm" ]; then
+  echo "✓ Dependencies found"
+else
+  echo "⚠ WARNING: Dependencies not found - rebuild image with: docker compose build"
+fi
+
+echo "=== Starting application ==="
 exec "$@"
