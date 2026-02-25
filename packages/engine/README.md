@@ -4,7 +4,19 @@ Engine do jogo de cartas em **Lua puro**. Comunicação via JSON: uma linha de e
 
 ## Requisitos
 
-- **Lua 5.1+** instalado e no `PATH` (comando `lua` ou `lua5.4` / `lua5.3` conforme o sistema).
+### Docker
+
+No Docker, Lua é instalado automaticamente no Dockerfile do `apps/game`. Não é necessário instalar manualmente.
+
+### Desenvolvimento Local
+
+Para desenvolvimento local (fora do Docker), você precisa ter **Lua 5.1+** instalado e no `PATH`:
+
+- **macOS:** `brew install lua`
+- **Linux (Debian/Ubuntu):** `apt-get install lua5.4` ou `apt-get install lua`
+- **Linux (Alpine):** `apk add lua5.4` ou `apk add lua`
+
+O comando `lua` (ou `lua5.4` / `lua5.3` conforme o sistema) deve estar disponível no PATH.
 
 ## Uso
 

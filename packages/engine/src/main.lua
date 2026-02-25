@@ -12,42 +12,7 @@ elseif script_dir ~= "" then
 end
 
 local json = require("json")
-
--- Simple session id (deterministic if seed provided)
-local function new_session_id(seed)
-  if seed and type(seed) == "number" then
-    math.randomseed(seed)
-  else
-    math.randomseed(os.time())
-  end
-  return string.format("sess-%x-%d", os.time(), math.random(10000, 99999))
-end
-
--- Build initial game state (protocol: GameState)
-local function handle_init(payload)
-  local seed = payload and payload.seed
-  local session_id = new_session_id(seed)
-  return {
-    ok = true,
-    state = {
-      sessionId = session_id,
-      turn = 1,
-      phase = "play",
-      players = {},
-    },
-    events = { { type = "game_initialized", payload = {} } },
-  }
-end
-
--- Process one step: validate and advance state (stub: echo state + one event)
-local function handle_step(state, action)
-  local action_type = action and action.type or "unknown"
-  return {
-    ok = true,
-    state = state or {},
-    events = { { type = "step_processed", payload = { action = action } } },
-  }
-end
+local handlers = require("handlers")
 
 -- Main: one line in -> one line out
 local function main()
@@ -70,9 +35,9 @@ local function main()
 
   local result
   if input.type == "init" then
-    result = handle_init(input.payload)
+    result = handlers.handle_init(input.payload)
   elseif input.type == "step" then
-    result = handle_step(input.state, input.action)
+    result = handlers.handle_step(input.state, input.action)
   else
     result = {
       ok = false,
