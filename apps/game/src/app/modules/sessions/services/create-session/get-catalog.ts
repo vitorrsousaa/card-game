@@ -1,7 +1,7 @@
+import { createLogger } from "@application/utils/logger";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createLogger } from "@application/utils/logger";
 import { validateCatalog, type Catalog } from "./validate-catalog";
 
 const logger = createLogger("get-catalog");
@@ -19,14 +19,8 @@ export async function getCatalog(): Promise<Catalog> {
 		// Go up 6 levels: create-session -> services -> sessions -> modules -> app -> src -> game
 		const catalogPath = join(currentDir, "../../../../../../data/cards.json");
 
-		logger.debug("Reading catalog from file", { catalogPath });
-
 		const fileContent = await readFile(catalogPath, "utf-8");
 		const cardsJson = JSON.parse(fileContent);
-
-		logger.debug("Catalog file read successfully", {
-			cardsCount: Array.isArray(cardsJson) ? cardsJson.length : 0,
-		});
 
 		const catalog = validateCatalog(cardsJson);
 
