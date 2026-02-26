@@ -1,5 +1,6 @@
 import { ROUTES } from "@/config/routes";
 import { TopBar } from "@/modules/hub/view/components/topbar";
+import { useCreateSession } from "@/modules/match/app/hooks/use-create-session";
 import { Button } from "@repo/ui/button";
 import {
 	Card,
@@ -9,9 +10,26 @@ import {
 	CardTitle,
 } from "@repo/ui/card";
 import { Library, Play, Settings, ShoppingBag } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function Hub() {
+	const navigate = useNavigate();
+	const { createSessionAsync, isPending } = useCreateSession();
+
+	const handleStartMatch = async () => {
+		try {
+			const result = await createSessionAsync({});
+			const session = result.sessions[0];
+
+			if (session?.id) {
+				navigate(ROUTES.MATCH(session.id));
+			}
+		} catch (error) {
+			// TODO: add user-facing notification
+			console.error("Failed to create session:", error);
+		}
+	};
+
 	return (
 		<div className="min-h-screen bg-background">
 			<TopBar />
@@ -29,27 +47,28 @@ export function Hub() {
 
 				{/* Main Action Cards */}
 				<div className="grid md:grid-cols-2 gap-6 mb-8">
-					<Link to="/loading?next=match" className="block group">
-						<Card className="h-full transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/30 border-2 hover:border-primary bg-gradient-to-br from-secondary/50 to-secondary/30 backdrop-blur-sm">
-							<CardHeader>
-								<div className="flex items-center gap-3 mb-2">
-									<div className="p-3 rounded-lg bg-primary/20 group-hover:bg-primary/30 transition-colors">
-										<Play className="w-8 h-8 text-primary" />
-									</div>
-									<CardTitle className="text-2xl">Start Match</CardTitle>
+					<Card
+						className="h-full transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/30 border-2 hover:border-primary bg-gradient-to-br from-secondary/50 to-secondary/30 backdrop-blur-sm"
+						onClick={handleStartMatch}
+					>
+						<CardHeader>
+							<div className="flex items-center gap-3 mb-2">
+								<div className="p-3 rounded-lg bg-primary/20 group-hover:bg-primary/30 transition-colors">
+									<Play className="w-8 h-8 text-primary" />
 								</div>
-								<CardDescription className="text-base">
-									Enter the temporal battlefield and test your mastery against
-									AI opponents
-								</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<Button className="w-full" size="lg">
-									Begin Timeline Duel
-								</Button>
-							</CardContent>
-						</Card>
-					</Link>
+								<CardTitle className="text-2xl">Start Match</CardTitle>
+							</div>
+							<CardDescription className="text-base">
+								Enter the temporal battlefield and test your mastery against AI
+								opponents
+							</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<Button className="w-full" size="lg" disabled={isPending}>
+								{isPending ? "Creating..." : "Begin Timeline Duel"}
+							</Button>
+						</CardContent>
+					</Card>
 
 					<Link to={ROUTES.DECK} className="block group">
 						<Card className="h-full transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-accent/30 border-2 hover:border-accent bg-gradient-to-br from-secondary/50 to-secondary/30 backdrop-blur-sm">

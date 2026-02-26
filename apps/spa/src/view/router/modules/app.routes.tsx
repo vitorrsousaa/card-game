@@ -1,6 +1,7 @@
 import { ROUTES } from "@/config/routes";
 import { DashboardLayout } from "@/layouts/app/dashboard-layout";
-import { lazy } from "react";
+import { LoadingPage } from "@/pages/app/loading";
+import { Suspense, lazy } from "react";
 import type { RouteObject } from "react-router-dom";
 
 const Hub = lazy(() =>
@@ -18,12 +19,6 @@ const Shop = lazy(() =>
 const Deck = lazy(() =>
 	import("@/pages/app/deck").then((module) => ({
 		default: module.Deck,
-	})),
-);
-
-const LoadingPage = lazy(() =>
-	import("@/pages/app/loading").then((module) => ({
-		default: module.LoadingPage,
 	})),
 );
 
@@ -49,12 +44,12 @@ export const appRoutes: RouteObject = {
 			element: <Deck />,
 		},
 		{
-			path: "/loading",
-			element: <LoadingPage />,
-		},
-		{
-			path: "/match",
-			element: <Match />,
+			path: ROUTES.MATCH_PATTERN,
+			element: (
+				<Suspense fallback={<LoadingPage />}>
+					<Match />
+				</Suspense>
+			),
 		},
 	],
 };

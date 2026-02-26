@@ -1,6 +1,6 @@
 # @repo/contracts
 
-Shared TypeScript types that define the **API contract** between the backend (API) and the frontend (SPA). A single source of truth for request/response shapes and DTOs, with no runtime code—only type definitions.
+Shared contracts that define the **API contract** between backend (API/Game) and frontend (SPA). Single source of truth for request/response shapes, DTOs, and Zod schemas used for validation.
 
 ## Contents
 
@@ -34,11 +34,10 @@ In `package.json`:
 
 ## What’s in the package
 
-- **Request/response types** for each endpoint (e.g. `GetInboxTodosRequest`, `GetInboxTodosResponse`).
+- **Zod schemas** for inputs/outputs (e.g. `CreateSessionInputSchema`, `CreateSessionOutputSchema`).
+- **Inferred types** from schemas (e.g. `CreateSessionInput`, `CreateSessionOutput`).
 - **DTOs** for entities as they travel over the wire (e.g. `TodoDto` with dates as ISO strings).
 - **Common types** (e.g. `PaginatedResponse<T>`).
-
-Validation (Zod, etc.) stays in each app; this package has **no runtime code** and **no validation schemas**.
 
 ## Exports and entry points
 
@@ -72,14 +71,16 @@ import type { PaginatedResponse } from "@repo/contracts/common";
 
 ## Naming conventions
 
-| Concept           | Pattern                                | Example                      |
-| ----------------- | -------------------------------------- | ---------------------------- |
-| Request / input   | `{Resource}{Action}Request` or `Input` | `CreateTodoRequest`          |
-| Response / output | `{Resource}{Action}Response`           | `GetInboxTodosResponse`      |
-| Wire object       | `{Entity}Dto`                          | `TodoDto`                    |
-| Paginated list    | `PaginatedResponse<T>`                 | `PaginatedResponse<TodoDto>` |
+| Concept            | Pattern                         | Example                      |
+| ------------------ | --------------------------------| ---------------------------- |
+| Input schema       | `{Action}{Resource}InputSchema` | `CreateSessionInputSchema`   |
+| Input type         | `{Action}{Resource}Input`       | `CreateSessionInput`         |
+| Output schema      | `{Action}{Resource}OutputSchema`| `CreateSessionOutputSchema`  |
+| Output type        | `{Action}{Resource}Output`      | `CreateSessionOutput`        |
+| Wire object (DTO)  | `{Entity}Dto`                   | `TodoDto`, `SessionDto`      |
+| Paginated list     | `PaginatedResponse<T>`          | `PaginatedResponse<TodoDto>` |
 
-DTOs use the **serialized** format (e.g. dates as ISO strings). The API can use `Date` in domain models and convert to DTO at the boundary.
+DTOs use the **serialized** format (e.g. dates as ISO strings). Use schemas for validation; infer types from schemas to avoid drift.
 
 ## Usage in the API
 
@@ -217,9 +218,10 @@ Build output is in `dist/` (ESM + `.d.ts`). Consumers resolve types via the pack
 
 ## Notes
 
-- **No Zod or validation** in this package; validation stays in the API (and SPA if needed), using contract types as reference.
+- **Zod schemas live here** when shared validation is needed; infer types from schemas to prevent drift.
+- **Interfaces only**: use when the shape is compile-time only and never validated at runtime.
 - **Routes (URL paths)** are not defined here; they live in the SPA (or API) to avoid coupling.
-- **Adding a new endpoint**: add or extend a folder under `src/todo/` (or another resource), export request/response types and DTOs, then add the corresponding entry in `tsup.config.ts` and in `package.json` `exports` if you introduce a new subpath.
+- **Adding a new endpoint**: add or extend a folder under `src/todo/` (or another resource), export schemas/types/DTOs, then add the corresponding entry in `tsup.config.ts` and in `package.json` `exports` if you introduce a new subpath.
 - For design rationale and when to consider OpenAPI/codegen, see [docs/contracts-package.md](../contracts-package.md).
 
 [⬅ Back](../README.md)

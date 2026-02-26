@@ -100,6 +100,54 @@ flowchart LR
 
 ---
 
+## Role of @repo/contracts (data flow)
+
+Contracts sit between APIs and SPA to keep validation and types aligned.
+
+```mermaid
+flowchart TB
+    subgraph Frontend["Frontend (SPA)"]
+        Component[Component]
+        Hook[Hook]
+        Service[Service]
+    end
+
+    subgraph Contracts["@repo/contracts"]
+        InputSchema[InputSchema Zod]
+        InputType[Input Type]
+        OutputSchema[OutputSchema Zod]
+        OutputType[Output Type]
+        DTO[Entity DTO]
+    end
+
+    subgraph Backend["Backend (API/Game)"]
+        Controller[Controller]
+        ServiceLayer[Service]
+        Domain[Domain Entity]
+        Mapper[Mapper]
+    end
+
+    Component -->|uses type| OutputType
+    Hook -->|uses type| OutputType
+    Service -->|uses types| InputType
+    Service -->|uses types| OutputType
+
+    Controller -->|validates with| InputSchema
+    Controller -->|types response| OutputType
+    Controller -->|uses| Mapper
+
+    ServiceLayer -->|uses types| InputType
+    ServiceLayer -->|returns| Domain
+
+    Mapper -->|converts| Domain
+    Mapper -->|to| DTO
+
+    InputSchema -.->|infers| InputType
+    OutputSchema -.->|infers| OutputType
+```
+
+Contracts flow: Schema Zod (validation) → Domain (logic) → DTO (transport) → SPA types (rendering).
+
 ## Referências
 
 - **Plano e conceitos:** `apps/game/docs/PASSO-A-PASSO-PVE-E-CONCEITOS.md`

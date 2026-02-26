@@ -1,14 +1,15 @@
+import { ROUTES } from "@/config/routes";
 import { GameCard } from "@/modules/deck/view/components/game-card";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
 import { Progress } from "@repo/ui/progress";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 import { Heart, Zap } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { mockEnemyCards, mockPlayerDeck } from "./deck";
+import { useNavigate, useParams } from "react-router-dom";
+import { mockEnemyCards, mockPlayerDeck } from "../deck";
 
 export function Match() {
+	const { sessionId } = useParams<{ sessionId: string }>();
 	const navigate = useNavigate();
 	const [playerHealth, setPlayerHealth] = useState(30);
 	const [enemyHealth, setEnemyHealth] = useState(30);
@@ -20,6 +21,16 @@ export function Match() {
 	const playerHand = mockPlayerDeck.slice(0, 5);
 	const enemyBoard = mockEnemyCards.slice(0, 2);
 	const playerBoard = mockPlayerDeck.slice(5, 7);
+
+	useEffect(() => {
+		if (!sessionId) {
+			navigate(ROUTES.HUB);
+		}
+	}, [sessionId, navigate]);
+
+	if (!sessionId) {
+		return null;
+	}
 
 	const handleEndTurn = () => {
 		setTurn(turn + 1);

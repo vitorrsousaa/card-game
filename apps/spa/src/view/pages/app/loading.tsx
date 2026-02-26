@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -34,12 +32,12 @@ export function LoadingPage() {
 						key={i}
 						className="absolute rounded-full bg-primary animate-pulse"
 						style={{
-							width: Math.random() * 60 + 30 + "px",
-							height: Math.random() * 60 + 30 + "px",
-							top: Math.random() * 100 + "%",
-							left: Math.random() * 100 + "%",
-							animationDelay: Math.random() * 2 + "s",
-							animationDuration: Math.random() * 2 + 2 + "s",
+							width: `${Math.random() * 60 + 30}px`,
+							height: `${Math.random() * 60 + 30}px`,
+							top: `${Math.random() * 100}%`,
+							left: `${Math.random() * 100}%`,
+							animationDelay: `${Math.random() * 2}s`,
+							animationDuration: `${Math.random() * 2 + 2}s`,
 						}}
 					/>
 				))}

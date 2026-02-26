@@ -1,0 +1,44 @@
+# Contracts Standards
+
+**Applies to:** `packages/contracts/**/*.ts`
+
+## Naming
+- Input schema: `{Action}{Resource}InputSchema`
+- Input type: `{Action}{Resource}Input`
+- Output schema: `{Action}{Resource}OutputSchema`
+- Output type: `{Action}{Resource}Output`
+- DTO: `{Entity}Dto`
+
+## Structure
+- Define Zod schemas + inferred types in `dto.ts`.
+- Keep DTOs in the same file (wire format; dates as ISO strings).
+- Re-export via `index.ts` for the folder and parent folder.
+- Use interfaces only when no runtime validation is required.
+
+## Usage Patterns
+- Backend controllers: use schemas for validation, output types/DTOs for responses.
+- Services/domain: stay free of contract types; map at the boundary.
+- Frontend services/hooks: import output types/DTOs; optionally reuse schemas for client-side validation.
+
+## Checklist when adding/editing contracts
+- [ ] Names follow the patterns above.
+- [ ] Zod schemas defined for inputs/outputs when validation is needed.
+- [ ] Types inferred from schemas (no duplicate shapes).
+- [ ] DTOs use transport format (e.g., ISO strings for dates).
+- [ ] Exports added to folder `index.ts` and parent indexes.
+- [ ] `tsup.config.ts` entry present if a new subpath is added.
+
+## Examples
+```typescript
+export const CreateSessionInputSchema = z.object({
+  userId: z.string().uuid("User ID is required"),
+});
+export type CreateSessionInput = z.infer<typeof CreateSessionInputSchema>;
+```
+
+```typescript
+export interface SessionDto {
+  id: string;
+  createdAt: string; // ISO 8601
+}
+```
