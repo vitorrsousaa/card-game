@@ -21,7 +21,7 @@ export class CreateSessionController implements IController {
 
 			return {
 				statusCode: 200,
-				body: result.sessions,
+				body: result.session,
 			};
 		} catch (error) {
 			return errorHandler(error);

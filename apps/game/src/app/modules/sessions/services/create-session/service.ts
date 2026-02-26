@@ -56,8 +56,7 @@ export class CreateSessionService implements ICreateSessionService {
 					error: result.error,
 					code: result.code,
 				});
-				// For now we still return an array; later throw AppError
-				return { sessions: [] };
+				throw new Error(`Engine failed to create session: ${result.error}`);
 			}
 
 			// Create session DTO
@@ -88,7 +87,7 @@ export class CreateSessionService implements ICreateSessionService {
 				eventsCount: result.events.length,
 			});
 
-			return { sessions: [session] };
+			return { session };
 		} catch (error) {
 			logger.error("CreateSessionService - unhandled error", { error });
 			throw error;

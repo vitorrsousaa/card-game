@@ -6,15 +6,17 @@ export const CreateSessionInputSchema = z.object({
 
 export type CreateSessionInput = z.infer<typeof CreateSessionInputSchema>;
 
+export const CreateSessionRequestSchema = z.object({});
+
+export type CreateSessionRequest = z.infer<typeof CreateSessionRequestSchema>;
+
 export const CreateSessionOutputSchema = z.object({
-	sessions: z.array(
-		z.object({
-			id: z.string().uuid("Session ID is required"),
-			userId: z.string().uuid("User ID is required"),
-			createdAt: z.date({ message: "Created at is required" }),
-			updatedAt: z.date({ message: "Updated at is required" }),
-		}),
-	),
+	session: z.object({
+		id: z.string().uuid("Session ID is required"),
+		userId: z.string().uuid("User ID is required"),
+		createdAt: z.date({ message: "Created at is required" }),
+		updatedAt: z.date({ message: "Updated at is required" }),
+	}),
 });
 
 export type CreateSessionOutput = z.infer<typeof CreateSessionOutputSchema>;
@@ -73,5 +75,5 @@ export interface SessionDto {
  * Create session response (API output)
  */
 export interface CreateSessionResponseDto {
-	sessions: SessionDto[];
+	session: SessionDto;
 }
