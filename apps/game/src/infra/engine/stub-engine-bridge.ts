@@ -25,7 +25,14 @@ export class StubEngineBridge implements IEngineBridge {
 
 		return {
 			ok: true,
-			state: input.state ?? {},
+			state:
+				input.state ??
+				({
+					sessionId: crypto.randomUUID(),
+					turn: 1,
+					phase: "play",
+					players: [],
+				} as const),
 			events: [{ type: "step_processed", payload: { action: input } }],
 		};
 	}

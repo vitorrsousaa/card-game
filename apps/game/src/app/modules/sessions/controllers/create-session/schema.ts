@@ -1,3 +1,3 @@
-import { CreateSessionInputDTO } from "../../services/create-session/dto";
+import { CreateSessionInputSchema } from "@repo/contracts/game/sessions";
 
-export const createSessionSchema = CreateSessionInputDTO;
+export const createSessionSchema = CreateSessionInputSchema;

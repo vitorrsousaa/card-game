@@ -4,6 +4,8 @@
  * One JSON message per line (NDJSON) for streaming, or single JSON for request/response.
  */
 
+import type { GameEventDto, GameStateDto } from "@repo/contracts/game/sessions";
+
 /** Commands sent to the engine process */
 export type EngineInput =
 	| { type: "init"; payload?: InitPayload }
@@ -17,17 +19,7 @@ export interface InitPayload {
 }
 
 /** Full game state (engine is the source of truth) */
-export interface GameState {
-	/** Session/match identifier */
-	sessionId?: string;
-	/** Current turn, phase, etc. */
-	turn?: number;
-	phase?: string;
-	/** Players state (life, resources, hand, board, etc.) */
-	players?: unknown[];
-	/** Any extra state the engine needs */
-	[key: string]: unknown;
-}
+export type GameState = GameStateDto & Record<string, unknown>;
 
 /** Actions the client can send (play card, attack, end turn, etc.) */
 export interface GameAction {
@@ -49,9 +41,6 @@ export interface EngineErrorOutput {
 }
 
 /** Events for animations / UI feedback */
-export interface GameEvent {
-	type: string;
-	payload?: Record<string, unknown>;
-}
+export type GameEvent = GameEventDto;
 
 export type EngineResult = EngineOutput | EngineErrorOutput;

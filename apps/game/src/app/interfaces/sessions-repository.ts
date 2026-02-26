@@ -9,7 +9,7 @@ export interface ISessionsRepository {
 	 * Save a session to cache.
 	 * @param session Session DTO to save
 	 */
-	save(session: SessionDto): Promise<void>;
+	save(session: Omit<SessionDto, "createdAt" | "updatedAt">): Promise<void>;
 
 	/**
 	 * Find a session by ID.

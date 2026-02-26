@@ -11,4 +11,6 @@ export const ROUTES = {
 	SETTINGS: SETTINGS_ROUTES,
 	DECK: "/deck",
 	SHOP: "/shop",
+	MATCH: (sessionId: string) => `/match/${sessionId}`,
+	MATCH_PATTERN: "/match/:sessionId",
 } as const;

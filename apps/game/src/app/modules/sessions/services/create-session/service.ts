@@ -2,7 +2,10 @@ import type { IEngineBridge } from "@application/interfaces/engine-bridge";
 import type { IService } from "@application/interfaces/service";
 import type { ISessionsRepository } from "@application/interfaces/sessions-repository";
 import { createLogger } from "@application/utils/logger";
-import type { CreateSessionInput, CreateSessionOutput } from "./dto";
+import type {
+	CreateSessionInput,
+	CreateSessionOutput,
+} from "@repo/contracts/game/sessions";
 import { getCatalog } from "./get-catalog";
 import { getMockDeck } from "./get-mock-deck";
 import { getMockEnemyDeck } from "./get-mock-enemy-deck";
@@ -65,9 +68,8 @@ export class CreateSessionService implements ICreateSessionService {
 			const sessionDto = {
 				id: sessionId,
 				state: result.state,
+				events: result.events,
 				userId: input.userId,
-				createdAt: now.toISOString(),
-				updatedAt: now.toISOString(),
 			};
 
 			// Save session to cache
