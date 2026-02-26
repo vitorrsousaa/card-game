@@ -144,6 +144,83 @@ export function useGetProjects() {
 }
 ```
 
+## Mutation Result Handling
+
+Always destructure `useMutation` results and expose domain-friendly names instead of returning the mutation object directly:
+
+```typescript
+// ✅ GOOD - Destructure and rename to domain actions
+export function useCreateProject() {
+  const {
+    mutate: createProject,
+    mutateAsync: createProjectAsync,
+    isPending,
+    isError,
+    error,
+    data,
+  } = useMutation({ mutationFn: createProjectService });
+
+  return {
+    createProject,
+    createProjectAsync,
+    isPending,
+    isError,
+    error,
+    data,
+  };
+}
+```
+
+```typescript
+// ❌ BAD - Exposing raw mutation object and generic names
+export function useCreateProject() {
+  const mutation = useMutation({ mutationFn: createProjectService });
+
+  return {
+    mutation, // Raw object leaks internal shape
+    mutate: mutation.mutate, // Generic name clashes with other hooks
+  };
+}
+```
+
+### Standard mutation pattern (match/create-session)
+
+Use this structure as the baseline for new mutations—destructure the mutation result, rename to domain-specific actions, and return a flat object:
+
+```typescript
+// ✅ GOOD - Canonical structure for mutations
+export function useCreateSession() {
+  const {
+    mutate: createSession,
+    mutateAsync: createSessionAsync,
+    isPending,
+    isError,
+    error,
+    data,
+  } = useMutation({
+    mutationFn: createSessionService,
+  });
+
+  return {
+    createSession,
+    createSessionAsync,
+    isPending,
+    isError,
+    error,
+    data,
+  };
+}
+```
+
+```typescript
+// ❌ BAD - Returning raw mutation object
+export function useCreateSession() {
+  const mutation = useMutation({ mutationFn: createSessionService });
+
+  return { mutation }; // Leaks internal shape and forces consumers to know react-query internals
+}
+```
+
 ## Manual Cache Invalidation
 
 Invalidate cache after mutations:

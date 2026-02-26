@@ -1,25 +1,13 @@
 import { httpGameClient } from "@/services/http-game-client";
-
-export interface GetProjectDetailInput {
-	projectId: string;
-}
-
-export interface CreateSessionInput {
-	userId?: string | null;
-}
-
-export interface CreateSessionOutput {
-	sessions: Array<{
-		id: string;
-		state: unknown;
-		events: unknown[];
-	}>;
-}
+import type {
+	CreateSessionInput,
+	CreateSessionResponseDto,
+} from "@repo/contracts/game/sessions";
 
 export async function createSession(
 	input: CreateSessionInput,
-): Promise<CreateSessionOutput> {
-	const response = await httpGameClient.post<CreateSessionOutput>(
+): Promise<CreateSessionResponseDto> {
+	const response = await httpGameClient.post<CreateSessionResponseDto>(
 		"/sessions",
 		input,
 	);
