@@ -1,11 +1,11 @@
 import { httpGameClient } from "@/services/http-game-client";
 import type {
-	CreateSessionInput,
+	CreateSessionRequest,
 	CreateSessionResponseDto,
 } from "@repo/contracts/game/sessions";
 
 export async function createSession(
-	input: CreateSessionInput,
+	input: CreateSessionRequest,
 ): Promise<CreateSessionResponseDto> {
 	const response = await httpGameClient.post<CreateSessionResponseDto>(
 		"/sessions",
