@@ -30,7 +30,7 @@ export function LoadingPage() {
 	);
 
 	const handleCreateSession = useCallback(async () => {
-		const session = await createSessionAsync({});
+		const session = await createSessionAsync();
 		const sessionId = session?.id;
 		if (sessionId) {
 			navigate(ROUTES.MATCH(sessionId), { replace: true });
