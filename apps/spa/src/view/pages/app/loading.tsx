@@ -20,8 +20,7 @@ const LOADING_PARTICLE_KEYS = Array.from(
 
 export function LoadingPage() {
 	const navigate = useNavigate();
-	const { createSessionAsync, isPendingCreateSession, isErrorCreateSession } =
-		useCreateSession();
+	const { createSessionAsync, isErrorCreateSession } = useCreateSession();
 	const hasStarted = useRef(false);
 
 	const randomMessage = useMemo(

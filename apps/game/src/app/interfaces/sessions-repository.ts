@@ -7,9 +7,9 @@ import type { SessionDto } from "@repo/contracts/game/sessions";
 export interface ISessionsRepository {
 	/**
 	 * Save a session to cache.
-	 * @param session Session DTO to save
+	 * @param session Session DTO to save (full SessionDto including createdAt and updatedAt)
 	 */
-	save(session: Omit<SessionDto, "createdAt" | "updatedAt">): Promise<void>;
+	save(session: SessionDto): Promise<void>;
 
 	/**
 	 * Find a session by ID.

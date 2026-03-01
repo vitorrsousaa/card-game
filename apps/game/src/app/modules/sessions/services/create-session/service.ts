@@ -5,6 +5,7 @@ import { createLogger } from "@application/utils/logger";
 import type {
 	CreateSessionInput,
 	CreateSessionOutput,
+	SessionDto,
 } from "@repo/contracts/game/sessions";
 import { getCatalog } from "./get-catalog";
 import { getMockDeck } from "./get-mock-deck";
@@ -59,35 +60,24 @@ export class CreateSessionService implements ICreateSessionService {
 				throw new Error(`Engine failed to create session: ${result.error}`);
 			}
 
-			// Create session DTO
+			// Create full session DTO (same format as Get Session)
 			const sessionId =
 				(result.state.sessionId as string) ?? crypto.randomUUID();
 			const now = new Date();
+			const nowIso = now.toISOString();
 
-			const sessionDto = {
+			const sessionDto: SessionDto = {
 				id: sessionId,
 				state: result.state,
-				events: result.events,
 				userId: input.userId,
+				createdAt: nowIso,
+				updatedAt: nowIso,
 			};
 
-			// Save session to cache
+			// Save full session to cache
 			await this.sessionsRepository.save(sessionDto);
 
-			// Return session with Date objects for the output DTO
-			const session = {
-				id: sessionId,
-				userId: input.userId,
-				createdAt: now,
-				updatedAt: now,
-			};
-
-			logger.info("CreateSessionService - session created and saved", {
-				sessionId: session.id,
-				eventsCount: result.events.length,
-			});
-
-			return { session };
+			return { session: sessionDto };
 		} catch (error) {
 			logger.error("CreateSessionService - unhandled error", { error });
 			throw error;
