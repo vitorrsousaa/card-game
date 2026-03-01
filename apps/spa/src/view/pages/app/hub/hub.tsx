@@ -1,6 +1,5 @@
 import { ROUTES } from "@/config/routes";
 import { TopBar } from "@/modules/hub/view/components/topbar";
-import { useCreateSession } from "@/modules/match/app/hooks/use-create-session";
 import { Button } from "@repo/ui/button";
 import {
 	Card,
@@ -14,20 +13,9 @@ import { Link, useNavigate } from "react-router-dom";
 
 export function Hub() {
 	const navigate = useNavigate();
-	const { createSessionAsync, isPending } = useCreateSession();
 
-	const handleStartMatch = async () => {
-		try {
-			const result = await createSessionAsync({});
-			const session = result.sessions[0];
-
-			if (session?.id) {
-				navigate(ROUTES.MATCH(session.id));
-			}
-		} catch (error) {
-			// TODO: add user-facing notification
-			console.error("Failed to create session:", error);
-		}
+	const handleStartMatch = () => {
+		navigate(ROUTES.LOADING);
 	};
 
 	return (
@@ -64,8 +52,8 @@ export function Hub() {
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
-							<Button className="w-full" size="lg" disabled={isPending}>
-								{isPending ? "Creating..." : "Begin Timeline Duel"}
+							<Button className="w-full" size="lg">
+								Begin Timeline Duel
 							</Button>
 						</CardContent>
 					</Card>

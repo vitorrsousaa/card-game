@@ -11,5 +11,6 @@ export async function createSession(
 		"/sessions",
 		input,
 	);
+
 	return response.data;
 }

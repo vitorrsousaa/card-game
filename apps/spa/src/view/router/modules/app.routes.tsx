@@ -28,12 +28,22 @@ const Match = lazy(() =>
 	})),
 );
 
+const Loading = lazy(() =>
+	import("@/pages/app/loading").then((module) => ({
+		default: module.LoadingPage,
+	})),
+);
+
 export const appRoutes: RouteObject = {
 	element: <DashboardLayout />,
 	children: [
 		{
 			path: ROUTES.HUB,
 			element: <Hub />,
+		},
+		{
+			path: ROUTES.LOADING,
+			element: <Loading />,
 		},
 		{
 			path: ROUTES.SHOP,

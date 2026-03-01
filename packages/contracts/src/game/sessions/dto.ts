@@ -74,6 +74,4 @@ export interface SessionDto {
 /**
  * Create session response (API output)
  */
-export interface CreateSessionResponseDto {
-	session: SessionDto;
-}
+export type CreateSessionResponseDto = SessionDto;

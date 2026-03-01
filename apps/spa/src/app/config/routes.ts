@@ -8,6 +8,7 @@ export const ROUTES = {
 	SIGNUP: "/signup",
 	GOOGLE_CALLBACK: "/google/callback",
 	HUB: "/hub",
+	LOADING: "/loading",
 	SETTINGS: SETTINGS_ROUTES,
 	DECK: "/deck",
 	SHOP: "/shop",
