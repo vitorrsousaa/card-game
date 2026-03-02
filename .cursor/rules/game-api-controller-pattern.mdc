@@ -1,0 +1,30 @@
+---
+description: Padrão de controllers e schemas na API game (missingFields + contracts)
+globs: apps/game/src/app/modules/**/controllers/**/*.ts
+alwaysApply: false
+---
+
+# Game API Controller Pattern
+
+Ao criar ou editar controllers/schemas na API do game, seguir este padrão.
+
+## Controller
+
+1. Usar **`missingFields(schema, …)`** com destructuring **`[status, parsedBody]`**.
+2. Em caso de erro de validação: **`if (!status) return parsedBody;`**.
+3. Chamar o service com **`parsedBody`** (dados já validados).
+
+## Schema
+
+- Todo schema deve vir de **`@repo/contracts`** (ex.: `@repo/contracts/game/sessions`).
+- No arquivo **`schema.ts`** do controller: apenas **re-exportar** o schema do contracts (ex.: `export const getSessionParamsSchema = GetSessionInputSchema`).
+
+## Padrões da Game API (referência)
+
+| Pilar      | Doc |
+|-----------|-----|
+| **Controller** | [CONTROLLER-PATTERN.md](apps/game/docs/CONTROLLER-PATTERN.md) |
+| **Service**    | [SERVICE-PATTERN.md](apps/game/docs/SERVICE-PATTERN.md) |
+| **Errors**     | [ERROR-HANDLING.md](apps/game/docs/ERROR-HANDLING.md) |
+
+Detalhes e exemplos de controller em **`apps/game/docs/CONTROLLER-PATTERN.md`**.

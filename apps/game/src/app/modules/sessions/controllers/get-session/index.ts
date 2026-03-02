@@ -1,0 +1,1 @@
+export { GetSessionController } from "./controller";

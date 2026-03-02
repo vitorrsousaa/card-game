@@ -10,6 +10,12 @@ export const CreateSessionRequestSchema = z.object({});
 
 export type CreateSessionRequest = z.infer<typeof CreateSessionRequestSchema>;
 
+export const GetSessionInputSchema = z.object({
+	sessionId: z.string().uuid("Session ID must be a valid UUID"),
+});
+
+export type GetSessionInput = z.infer<typeof GetSessionInputSchema>;
+
 export const CreateSessionOutputSchema = z.object({
 	session: z.object({
 		id: z.string().uuid("Session ID is required"),
@@ -21,6 +27,9 @@ export const CreateSessionOutputSchema = z.object({
 
 /** Create session API response. Same shape as GetSessionResponseDto (SessionDto). */
 export type CreateSessionOutput = { session: SessionDto };
+
+/** Get session API response. Same format as CreateSessionOutput. */
+export type GetSessionOutput = { session: SessionDto };
 
 /**
  * Player state in a game session

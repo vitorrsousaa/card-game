@@ -1,6 +1,7 @@
 import type { IEngineBridge } from "@application/interfaces/engine-bridge";
 import type { IService } from "@application/interfaces/service";
 import type { ISessionsRepository } from "@application/interfaces/sessions-repository";
+import { SessionCreationFailed } from "@application/modules/sessions/errors/session-creation-failed";
 import { createLogger } from "@application/utils/logger";
 import type {
 	CreateSessionInput,
@@ -57,7 +58,11 @@ export class CreateSessionService implements ICreateSessionService {
 					error: result.error,
 					code: result.code,
 				});
-				throw new Error(`Engine failed to create session: ${result.error}`);
+				logger.error("CreateSessionService - engine returned error", {
+					error: result.error,
+					code: result.code,
+				});
+				throw new SessionCreationFailed();
 			}
 
 			// Create full session DTO (same format as Get Session)
