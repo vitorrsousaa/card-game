@@ -1,5 +1,6 @@
 import { createLogger } from "@application/utils/logger";
 import { authMockMiddleware } from "@server/middlewares/auth-mock";
+import { cards } from "@server/routes/cards-routes";
 import { health } from "@server/routes/health-routes";
 import { sessions } from "@server/routes/sessions-routes";
 import { Hono } from "hono";
@@ -48,6 +49,7 @@ app.use("*", async (c, next) => {
 app.use("*", authMockMiddleware);
 
 const routeEntries = [
+	{ path: "/cards", router: cards },
 	{ path: "/health", router: health },
 	{ path: "/sessions", router: sessions },
 ] as const;

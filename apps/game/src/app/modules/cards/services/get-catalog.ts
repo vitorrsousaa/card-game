@@ -12,11 +12,9 @@ const logger = createLogger("get-catalog");
  */
 export async function getCatalog(): Promise<Catalog> {
 	try {
-		// Get the directory of the current file
 		const currentFile = fileURLToPath(import.meta.url);
 		const currentDir = dirname(currentFile);
-		// Navigate from src/app/modules/sessions/services/create-session to apps/game/data/cards.json
-		// Go up 6 levels: create-session -> services -> sessions -> modules -> app -> src -> game
+		// Navigate from src/app/modules/cards/services to apps/game/data/cards.json
 		const catalogPath = join(currentDir, "../../../../../../data/cards.json");
 
 		const fileContent = await readFile(catalogPath, "utf-8");

@@ -8,7 +8,7 @@ import type {
 	CreateSessionOutput,
 	SessionDto,
 } from "@repo/contracts/game/sessions";
-import { getCatalog } from "./get-catalog";
+import { getCatalog } from "@application/modules/cards/services/get-catalog";
 import { getMockDeck } from "./get-mock-deck";
 import { getMockEnemyDeck } from "./get-mock-enemy-deck";
 
