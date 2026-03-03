@@ -8,6 +8,40 @@ alwaysApply: false
 
 Best practices for data fetching and caching with React Query.
 
+## Regra de Ouro: Sempre Desestruturar
+
+**Ao usar `useMutation` ou `useQuery`, SEMPRE desestruture o retorno.** Nunca use o objeto completo (`mutation` ou `query`) e acesse propriedades como `mutation.mutate` ou `query.data`.
+
+```typescript
+// ✅ BOM - Desestruturar e extrair o que precisa
+const {
+  mutate: createSession,
+  mutateAsync: createSessionAsync,
+  isPending,
+  isError,
+  data,
+} = useMutation({ mutationFn: createSession });
+
+// ✅ BOM - Query
+const {
+  data: session,
+  isLoading: isLoadingSession,
+  isError: isErrorGetSession,
+  refetch,
+} = useQuery({ queryKey: [...], queryFn: getSession });
+```
+
+```typescript
+// ❌ RUIM - Usar objeto direto
+const mutation = useMutation({ mutationFn: createSession });
+return { createSession: mutation.mutate }; // Evitar mutation.mutate
+
+const query = useQuery({ queryKey: [...], queryFn: getSession });
+return { session: query.data }; // Evitar query.data
+```
+
+**Motivos:** API mais limpa, evita vazamento da forma interna do React Query, facilita renomear para nomes de domínio, e o TypeScript infere melhor os tipos.
+
 ## Cache Configuration
 
 ### Global Defaults (query.tsx)
@@ -146,7 +180,7 @@ export function useGetProjects() {
 
 ## Mutation Result Handling
 
-Always destructure `useMutation` results and expose domain-friendly names instead of returning the mutation object directly:
+Sempre desestruture o retorno de `useMutation` (ver regra acima) e exponha nomes de domínio em vez do objeto bruto:
 
 ```typescript
 // ✅ GOOD - Destructure and rename to domain actions

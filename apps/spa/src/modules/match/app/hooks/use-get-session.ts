@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/config/query-keys";
 import { getSession } from "../services/get-session";
 
 export function useGetSession(sessionId: string | undefined) {
@@ -9,7 +10,7 @@ export function useGetSession(sessionId: string | undefined) {
 		error: errorGetSession,
 		refetch,
 	} = useQuery({
-		queryKey: ["session", sessionId],
+		queryKey: QUERY_KEYS.SESSIONS.DETAIL(sessionId ?? ""),
 		queryFn: () => getSession(sessionId as string),
 		enabled: !!sessionId,
 	});

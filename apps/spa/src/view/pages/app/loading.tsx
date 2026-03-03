@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { ROUTES } from "@/config/routes";
 import { useCreateSession } from "@/modules/match/app/hooks/use-create-session";
+import type { SessionDto } from "@repo/contracts/game/sessions";
 import { Button } from "@repo/ui/button";
 
 const loadingMessages = [
@@ -20,7 +21,17 @@ const LOADING_PARTICLE_KEYS = Array.from(
 
 export function LoadingPage() {
 	const navigate = useNavigate();
-	const { createSessionAsync, isErrorCreateSession } = useCreateSession();
+
+	const handleSuccessCreateSession = useCallback(
+		(session: SessionDto) => {
+			navigate(ROUTES.MATCH(session.id), { replace: true });
+		},
+		[navigate],
+	);
+
+	const { createSession, isErrorCreateSession } = useCreateSession({
+		onSuccess: handleSuccessCreateSession,
+	});
 	const hasStarted = useRef(false);
 
 	const randomMessage = useMemo(
@@ -28,13 +39,9 @@ export function LoadingPage() {
 		[],
 	);
 
-	const handleCreateSession = useCallback(async () => {
-		const session = await createSessionAsync();
-		const sessionId = session?.id;
-		if (sessionId) {
-			navigate(ROUTES.MATCH(sessionId), { replace: true });
-		}
-	}, [createSessionAsync, navigate]);
+	const handleCreateSession = useCallback(() => {
+		createSession();
+	}, [createSession]);
 
 	useEffect(() => {
 		if (hasStarted.current) return;
